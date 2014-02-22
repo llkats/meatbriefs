@@ -1,0 +1,25 @@
+{
+  "name": "meatbriefs",
+  "version": "0.0.0",
+  "description": "lolol",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/llkats/meatbriefs.git"
+  },
+  "keywords": [
+    "meatbriefs"
+  ],
+  "author": "Lydia Katsamberis",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/llkats/meatbriefs/issues"
+  },
+  "homepage": "https://github.com/llkats/meatbriefs",
+  "dependencies": {
+    "express": "~3.4.8"
+  }
+}
