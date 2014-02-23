@@ -9,10 +9,10 @@ module.exports = function briefify(meat, db, cb) {
 
     if (!count) {
       // If this is the user's first message, always insert it
-      return db.addMeat(meat, 1, cb);
+      return db.addMeat(meat, cb);
     } else if (shouldReplace(count + 1)) {
       // What a lucky message! Replace the previous one we were storing.
-      return db.addMeat(meat, count + 1, cb);
+      return db.addMeat(meat, cb);
     } else {
       // Poor, unlucky message :( Tally its existence so the probability
       // calculations for later messages will be correct.

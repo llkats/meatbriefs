@@ -11,8 +11,8 @@ function getTestDb() {
     });
   };
   return {
-    addMeat: function(meat, count, cb) {
-      added.push({ meat: meat, count: count });
+    addMeat: function(meat, cb) {
+      added.push(meat);
       process.nextTick(function() {
         cb();
       });
@@ -64,8 +64,7 @@ describe('briefify', function() {
     briefify(meat, testDb, function() {
       var added = testDb._getAdded();
       expect(added).to.have.length(1);
-      expect(added[0].meat).to.deep.equal(meat);
-      expect(added[0].count).to.equal(1);
+      expect(added[0]).to.deep.equal(meat);
 
       done();
     });
@@ -85,8 +84,7 @@ describe('briefify', function() {
     briefify(meat, testDb, function() {
       var added = testDb._getAdded();
       expect(added).to.have.length(1);
-      expect(added[0].meat).to.deep.equal(meat);
-      expect(added[0].count).to.equal(2);
+      expect(added[0]).to.deep.equal(meat);
 
       done();
     });

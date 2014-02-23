@@ -18,31 +18,48 @@ function getExistenceKey(fingerprint, date) {
 
 // Add a message to the db, and update the fingerprint's existence entry with
 // the new count
-module.exports.addMeat = function(meat, count, cb) {
+module.exports.addMeat = function(meat, cb) {
   var created = new Date(meat.created);
   var dbKey = meat.created + '!' + uuid.v1();
+  var existenceKey = getExistenceKey(meat.fingerprint, created);
 
   // store two entries in the DB: one mapping timestamp => message, and another
   // mapping day+fingerprint => the first DB entry. This allows us to quickly
   // check if someone is already in the summary for a day
-  var operations = [
-    // message
-    {
-      type: 'put',
-      key: dbKey,
-      value: meat
-    },
-    // existence
-    {
-      type: 'put',
-      key: getExistenceKey(meat.fingerprint, created),
-      value: {
-        message: dbKey,
-        count: count
-      }
+  var messagePut = {
+    type: 'put',
+    key: dbKey,
+    value: meat
+  };
+  var existencePut = {
+    type: 'put',
+    key: existenceKey,
+    value: {
+      message: dbKey,
+      count: 1,
     }
+  };
+  var operations = [
+    messagePut,
+    existencePut
   ];
-  db.batch(operations, cb);
+  db.get(existenceKey, function(err, value) {
+    if (err && !err.notFound) {
+      return cb(err);
+    }
+
+    if (!err) {
+      // the key already existed, so increment the count in it
+      existencePut.value.count = value.count + 1;
+      // queue up the deletion of the previous message
+      operations.push({
+        type: 'del',
+        key: value.message
+      });
+    }
+
+    db.batch(operations, cb);
+  });
 }
 
 // Updates the message count for a particular fingerprint/day, without replacing
