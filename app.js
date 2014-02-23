@@ -17,11 +17,18 @@ app.get('/', function(req, res){
 app.listen(4444);
 console.log('Listening on port 4444');
 
-
 var socketClient = require('socket.io-client');
+var briefify = require('./briefify');
+var db = require('./db');
 var socket = socketClient.connect('https://chat.meatspac.es');
 
 socket.on('message', function(data) {
-  // io.sockets.emit('newmeat', { meat: data });
-  console.log('hey it\'s a new meat', data);
+  briefify(data, db, function(err) {
+    if (err) {
+      console.log('error processing meat: ' + err);
+      return;
+    }
+
+    console.log('processed meat!');
+  });
 });

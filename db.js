@@ -12,11 +12,12 @@ function getDateString(date) {
     date.getDate();
 }
 
-module.exports.addMeat = function(meat) {
-  var chat = meat.chat;
+module.exports.addMeat = function(meat, cb) {
+  var chat = meat.chat.value;
   var created = new Date(chat.created);
   var createdDay = getDateString(created);
   var dbKey = chat.created + '!' + uuid.v1();
+  console.log('dbKey = ' + dbKey);
 
   // store two entries in the DB: one mapping timestamp => chat, and another
   // mapping day+fingerprint => the first DB entry. This allows us to quickly
@@ -33,9 +34,5 @@ module.exports.addMeat = function(meat) {
       value: dbKey
     }
   ];
-  db.batch(operations, function(err) {
-    if (err) {
-      console.log('Something went horribly wrong!\n', err);
-    }
-  });
+  db.batch(operations, cb);
 }
