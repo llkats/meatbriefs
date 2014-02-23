@@ -13,11 +13,9 @@ function getDateString(date) {
 }
 
 module.exports.addMeat = function(meat, cb) {
-  var chat = meat.chat.value;
-  var created = new Date(chat.created);
+  var created = new Date(meat.created);
   var createdDay = getDateString(created);
-  var dbKey = chat.created + '!' + uuid.v1();
-  console.log('dbKey = ' + dbKey);
+  var dbKey = meat.created + '!' + uuid.v1();
 
   // store two entries in the DB: one mapping timestamp => chat, and another
   // mapping day+fingerprint => the first DB entry. This allows us to quickly
@@ -26,11 +24,11 @@ module.exports.addMeat = function(meat, cb) {
     {
       type: 'put',
       key: dbKey,
-      value: chat
+      value: meat
     },
     {
       type: 'put',
-      key: createdDay + '!' + chat.fingerprint,
+      key: createdDay + '!' + meat.fingerprint,
       value: dbKey
     }
   ];

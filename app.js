@@ -23,7 +23,8 @@ var db = require('./db');
 var socket = socketClient.connect('https://chat.meatspac.es');
 
 socket.on('message', function(data) {
-  briefify(data, db, function(err) {
+  var meat = data.chat.value;
+  briefify(meat, db, function(err) {
     if (err) {
       console.log('error processing meat: ' + err);
       return;
