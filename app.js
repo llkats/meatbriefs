@@ -1,5 +1,4 @@
 var express = require('express');
-var jade = require('jade');
 var app = express();
 
 var pub = __dirname + '/public';
