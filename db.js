@@ -96,3 +96,15 @@ module.exports.getCount = function(fingerprint, date, cb) {
     cb(null, value.count);
   });
 }
+
+var dayMs = 24*60*60*1000;
+// Returns a stream that reads all of the messages for a specific day
+module.exports.getSummary = function(date) {
+  var startDate =
+    new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+  var endDate = startDate + dayMs;
+  return db.createReadStream({
+    start: startDate + '!',
+    end: endDate + '!'
+  });
+}
