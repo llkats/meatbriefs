@@ -1,0 +1,22 @@
+body {
+  background: white;
+  color: #333;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+img {
+  float: left;
+  margin: 10px;
+}
+
+li {
+  border-top: 1px solid pink;
+  clear: both;
+  margin: 5px 0;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}

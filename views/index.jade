@@ -1,16 +1,19 @@
 doctype html
 html
-  //- include header
-  body
-    //- block content
+  head
+    link(type="text/css", rel="stylesheet", href="public/styles.css")
 
-    h1 hello world
+  body
+
+    h1 yesterday in fomo
+    h2 you get one chance
 
     main
       ul.briefs
 
         each val in data
-          li= JSON.stringify(val)
+          li
+            //- JSON.stringify(val)
             img(src= val.value.media)
             p= val.value.message
 

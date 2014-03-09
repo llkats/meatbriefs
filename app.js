@@ -9,6 +9,7 @@ app.set('view engine', 'jade');
 app.use(app.router);
 app.use(express.static(pub));
 app.use(express.errorHandler());
+app.use("/public", express.static(__dirname + '/public'));
 
 app.listen(4444);
 console.log('Listening on port 4444');
@@ -31,6 +32,8 @@ socket.on('message', function(data) {
 
 app.get('/', function(req, res){
   var today = new Date();
+  today.setDate(today.getDate() - 1);
+
   var summary = db.getSummary(today);
 
   var write = concat(function(streamdata) {
