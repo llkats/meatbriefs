@@ -6,14 +6,12 @@ html
   body
 
     h1 yesterday in fomo
-    h2 you get one chance
 
     main
       ul.briefs
 
         each val in data
           li
-            //- JSON.stringify(val)
             img(src= val.value.media)
             p= val.value.message
-
+            date= new Date(val.value.created).toLocaleString()

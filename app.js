@@ -31,10 +31,10 @@ socket.on('message', function(data) {
 });
 
 app.get('/', function(req, res){
-  var today = new Date();
-  today.setDate(today.getDate() - 1);
+  var yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
 
-  var summary = db.getSummary(today);
+  var summary = db.getSummary(yesterday, 2);
 
   var write = concat(function(streamdata) {
     res.render('index', { data:streamdata });
