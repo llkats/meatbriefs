@@ -5,3 +5,12 @@ html
     //- block content
 
     h1 hello world
+
+    main
+      ul.briefs
+
+        each val in data
+          li= JSON.stringify(val)
+            img(src= val.value.media)
+            p= val.value.message
+

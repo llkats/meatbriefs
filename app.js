@@ -10,10 +10,6 @@ app.use(app.router);
 app.use(express.static(pub));
 app.use(express.errorHandler());
 
-app.get('/', function(req, res){
-  res.render('index');
-});
-
 app.listen(4444);
 console.log('Listening on port 4444');
 
@@ -21,6 +17,7 @@ var socketClient = require('socket.io-client');
 var briefify = require('./briefify');
 var db = require('./db');
 var socket = socketClient.connect('https://chat.meatspac.es');
+var concat = require('concat-stream');
 
 socket.on('message', function(data) {
   var meat = data.chat.value;
@@ -29,7 +26,17 @@ socket.on('message', function(data) {
       console.log('error processing meat: ' + err);
       return;
     }
-
-    console.log('processed meat!');
   });
+});
+
+app.get('/', function(req, res){
+  var today = new Date();
+  var summary = db.getSummary(today);
+
+  var write = concat(function(streamdata) {
+    res.render('index', { data:streamdata });
+  });
+
+  summary.pipe(write);
+
 });
