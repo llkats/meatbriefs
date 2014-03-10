@@ -30,7 +30,8 @@
     "socket.io-client": "~0.9.16",
     "level": "~0.18.0",
     "uuid": "~1.4.1",
-    "concat-stream": "~1.4.3"
+    "concat-stream": "~1.4.3",
+    "nconf": "~0.6.9"
   },
   "devDependencies": {
     "mocha": "~1.17.1",

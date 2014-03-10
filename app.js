@@ -1,6 +1,9 @@
 var express = require('express');
 var app = express();
 
+var nconf = require('nconf');
+nconf.argv().env().file({ file: 'config.json' });
+
 var pub = __dirname + '/public';
 
 app.set('views', __dirname + '/views');
@@ -11,8 +14,8 @@ app.use(express.static(pub));
 app.use(express.errorHandler());
 app.use("/public", express.static(__dirname + '/public'));
 
-app.listen(4444);
-console.log('Listening on port 4444');
+app.listen(nconf.get('http:port'));
+console.log('Listening on port ', nconf.get('http:port'));
 
 var socketClient = require('socket.io-client');
 var briefify = require('./briefify');
