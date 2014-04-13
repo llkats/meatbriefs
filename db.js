@@ -98,13 +98,36 @@ module.exports.getCount = function(fingerprint, date, cb) {
 }
 
 var dayMs = 24*60*60*1000;
-// Returns a stream that reads all of the messages for a specific day or range of days
-module.exports.getSummary = function(date, range) {
+/* Returns a stream that reads up to pageSize messages for a specific range of days. Messages will
+ * start being read from lastEntryKey if it is specified, allowing you to read subsequent pageSize'd
+ * pages.
+ *
+ * Example usage:
+ *    // return a stream of up to 20 messages from the last 2 days
+ *    db.getSummary(new Date(), 2, 20);
+ *    // return a stream of up to 20 message from the last 2 days, starting at a specific message
+ *    db.getSummary(new Date(), 2, 20, '1234567890!deadbeef-cafe-d00d-1337-baadf00d');
+ */
+module.exports.getSummary = function(date, range, pageSize, lastEntryKey) {
   var startDate =
     new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
   var endDate = startDate + dayMs * range;
+
+  if (lastEntryKey && lastEntryKey.indexOf('!') != -1) {
+    var lastEntryDate = +lastEntryKey.substr(0, lastEntryKey.indexOf('!'));
+    if (!isNaN(lastEntryDate) && lastEntryDate >= startDate) {
+      startDate = lastEntryDate + 1;
+    }
+  }
+
+  if (startDate > endDate) {
+    // no more results!
+    pageSize = 0;
+  }
+
   return db.createReadStream({
     start: startDate + '!',
-    end: endDate + '!'
+    end: endDate + '!',
+    limit: pageSize
   });
 }

@@ -37,7 +37,7 @@ app.get('/', function(req, res){
   var yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
 
-  var summary = db.getSummary(yesterday, 2);
+  var summary = db.getSummary(yesterday, 2, 20);
 
   var write = concat(function(streamdata) {
     res.render('index', { data:streamdata });
