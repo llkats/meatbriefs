@@ -3,12 +3,9 @@ var Briefly = function() {
   // event handler for detecting scroll position and initiating ajax requests
   var scrollEvent = function(e) {
     var height = document.height || document.body.offsetHeight;
-    var scroll = window.pageYOffset + 600;
+    var scroll = window.pageYOffset + window.innerHeight + (window.innerHeight / 2);
 
-    console.log(height, 'height');
-    console.log(scroll, 'scroll');
-
-    if (scroll > height) {
+    if (scroll >= height) {
       var meats = document.getElementsByTagName('li');
       var last  = meats[meats.length - 1].className;
 
@@ -70,7 +67,7 @@ var Briefly = function() {
     };
 
     // make the request
-    httpRequest.open('GET', 'http://localhost:4444/moar/' + lastmeat);
+    httpRequest.open('GET', '/moar/' + lastmeat);
     httpRequest.send();
 
   };
