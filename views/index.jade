@@ -4,14 +4,12 @@ html
     link(type="text/css", rel="stylesheet", href="public/styles.css")
 
   body
-
     h1 yesterday in fomo
 
     main
       ul.briefs
+        include meat
 
-        each val in data
-          li
-            img(src= val.value.media)
-            p= val.value.message
-            date= new Date(val.value.created).toLocaleString()
+    script(type="text/javascript", src="public/index.js")
+    script(type="text/javascript").
+      Briefly.init();
