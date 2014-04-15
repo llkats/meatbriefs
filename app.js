@@ -34,6 +34,10 @@ function getYesterday() {
 
 socket.on('message', function(data) {
   var meat = data.chat.value;
+  if (meat.banned) {
+    return;
+  }
+
   briefify(meat, db, function(err) {
     if (err) {
       console.log('error processing meat: ' + err);
