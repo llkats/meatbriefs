@@ -23,7 +23,8 @@ console.log('Listening on port ', nconf.get('http:port'));
 var socketClient = require('socket.io-client');
 var briefify = require('./briefify');
 var db = require('./db');
-var socket = socketClient.connect('https://chat.meatspac.es');
+var socketOptions = { 'max reconnection attempts': 1000 };
+var socket = socketClient.connect('https://chat.meatspac.es', socketOptions);
 var concat = require('concat-stream');
 
 function getYesterday() {
