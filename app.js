@@ -40,7 +40,7 @@ socket.on('message', function(data) {
 app.get('/moar/:lastEntryKey', function(req, res) {
 
   // get the next 20 messages using the key of the last message present on the page
-  var summary = db.getSummary(yesterday, 2, 20, req.params.lastEntryKey);
+  var summary = db.getSummary(yesterday, 1, 20, req.params.lastEntryKey);
 
   // render the partial and send the HTML string to the client
   var write = concat(function(summary) {
