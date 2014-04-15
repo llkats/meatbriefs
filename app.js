@@ -53,7 +53,7 @@ app.get('/moar/:lastEntryKey', function(req, res) {
 });
 
 app.get('/', function(req, res){
-  var summary = db.getSummary(yesterday, 2, 20);
+  var summary = db.getSummary(yesterday, 1, 20);
 
   var write = concat(function(streamdata) {
     res.render('index', { data:streamdata });
