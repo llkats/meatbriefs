@@ -5,13 +5,16 @@ var nconf = require('nconf');
 nconf.argv().env().file({ file: 'config.json' });
 
 var pub = __dirname + '/public';
+var env = process.env.NODE_ENV || 'development';
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
 app.use(app.router);
-app.use(express.errorHandler());
 app.use('/public', express.static(pub));
+if (env != 'production') {
+  app.use(express.errorHandler());
+}
 app.disable('x-powered-by'); // Don't say we're using Express
 
 app.listen(nconf.get('http:port'));
@@ -40,7 +43,6 @@ socket.on('message', function(data) {
 });
 
 app.get('/moar/:lastEntryKey', function(req, res) {
-
   // get the next 20 messages using the key of the last message present on the page
   var summary = db.getSummary(getYesterday(), 1, 20, req.params.lastEntryKey);
 
@@ -62,5 +64,4 @@ app.get('/', function(req, res){
   });
 
   summary.pipe(write);
-
 });
