@@ -31,7 +31,8 @@
     "level": "~0.18.0",
     "uuid": "~1.4.1",
     "concat-stream": "~1.4.3",
-    "nconf": "~0.6.9"
+    "nconf": "~0.6.9",
+    "level-ttl": "~0.5.0"
   },
   "devDependencies": {
     "mocha": "~1.17.1",

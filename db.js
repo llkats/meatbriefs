@@ -1,10 +1,14 @@
 var level = require('level');
 var uuid = require('uuid');
+var ttl = require('level-ttl');
+
+var TTL_TIME = 3 * 24 * 60 * 60 * 1000; // 3 days, just to be safe :)
 
 var db = level('./data/', {
   createIfMissing: true,
   valueEncoding: 'json'
 });
+db = ttl(db, { checkFrequency: 60 * 60 * 1000 /* 1 hour */ });
 
 function getDateString(date) {
   return date.getFullYear() + '-' +
@@ -20,7 +24,9 @@ function getExistenceKey(fingerprint, date) {
 // the new count
 module.exports.addMeat = function(meat, cb) {
   var created = new Date(meat.created);
-  var dbKey = meat.created + '!' + uuid.v1();
+  var id = uuid.v1();
+  var dbKey = meat.created + '!' + id;
+  var migratedDbKey = 'meat\xff' + meat.created + '\xff' + id;
   var existenceKey = getExistenceKey(meat.fingerprint, created);
 
   // store two entries in the DB: one mapping timestamp => message, and another
@@ -29,6 +35,13 @@ module.exports.addMeat = function(meat, cb) {
   var messagePut = {
     type: 'put',
     key: dbKey,
+    value: meat
+  };
+  // TODO(tec27): Once this code has been live at least 3 days, remove the original put and leave
+  // only the migrated keys, fixing the summary code to utilize the new key format
+  var migratedMessagePut = {
+    type: 'put',
+    key: migratedDbKey,
     value: meat
   };
   var existencePut = {
@@ -41,6 +54,7 @@ module.exports.addMeat = function(meat, cb) {
   };
   var operations = [
     messagePut,
+    migratedMessagePut,
     existencePut
   ];
   db.get(existenceKey, function(err, value) {
@@ -58,7 +72,7 @@ module.exports.addMeat = function(meat, cb) {
       });
     }
 
-    db.batch(operations, cb);
+    db.batch(operations, { ttl: TTL_TIME }, cb);
   });
 }
 
@@ -73,7 +87,7 @@ module.exports.incrementCount = function(fingerprint, date, cb) {
     }
 
     value.count++;
-    db.put(key, value, function(err) {
+    db.put(key, value, { ttl: TTL_TIME }, function(err) {
       cb(err);
     });
   });
