@@ -10,7 +10,6 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
 app.use(app.router);
-app.use(express.static(pub));
 app.use(express.errorHandler());
 app.use("/public", express.static(__dirname + '/public'));
 app.disable('x-powered-by'); // Don't say we're using Express
