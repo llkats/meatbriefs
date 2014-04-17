@@ -48,7 +48,8 @@ module.exports.addMeat = function(meat, cb) {
     type: 'put',
     key: existenceKey,
     value: {
-      message: dbKey,
+      message: migratedDbKey,
+      oldMessage: dbKey,
       count: 1,
     }
   };
@@ -66,6 +67,13 @@ module.exports.addMeat = function(meat, cb) {
       // the key already existed, so increment the count in it
       existencePut.value.count = value.count + 1;
       // queue up the deletion of the previous message
+      if (value.oldMessage) {
+        // TODO(tec27): remove this after migration is over
+        operations.push({
+          type: 'del',
+          key: value.oldMessage
+        });
+      }
       operations.push({
         type: 'del',
         key: value.message
