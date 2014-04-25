@@ -25,8 +25,7 @@ function getExistenceKey(fingerprint, date) {
 module.exports.addMeat = function(meat, cb) {
   var created = new Date(meat.created);
   var id = uuid.v1();
-  var dbKey = meat.created + '!' + id;
-  var migratedDbKey = 'meat\xff' + meat.created + '\xff' + id;
+  var dbKey = 'meat\xff' + meat.created + '\xff' + id;
   var existenceKey = getExistenceKey(meat.fingerprint, created);
 
   // store two entries in the DB: one mapping timestamp => message, and another
@@ -37,25 +36,16 @@ module.exports.addMeat = function(meat, cb) {
     key: dbKey,
     value: meat
   };
-  // TODO(tec27): Once this code has been live at least 3 days, remove the original put and leave
-  // only the migrated keys, fixing the summary code to utilize the new key format
-  var migratedMessagePut = {
-    type: 'put',
-    key: migratedDbKey,
-    value: meat
-  };
   var existencePut = {
     type: 'put',
     key: existenceKey,
     value: {
-      message: migratedDbKey,
-      oldMessage: dbKey,
+      message: dbKey,
       count: 1,
     }
   };
   var operations = [
     messagePut,
-    migratedMessagePut,
     existencePut
   ];
   db.get(existenceKey, function(err, value) {
@@ -67,13 +57,6 @@ module.exports.addMeat = function(meat, cb) {
       // the key already existed, so increment the count in it
       existencePut.value.count = value.count + 1;
       // queue up the deletion of the previous message
-      if (value.oldMessage) {
-        // TODO(tec27): remove this after migration is over
-        operations.push({
-          type: 'del',
-          key: value.oldMessage
-        });
-      }
       operations.push({
         type: 'del',
         key: value.message
@@ -134,11 +117,16 @@ module.exports.getSummary = function(date, range, pageSize, lastEntryKey) {
   var startDate =
     new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
   var endDate = startDate + dayMs * range;
+  var startKey = 'meat\xff' + startDate + '\xff';
+  var endKey = 'meat\xff' + endDate + '\xff';
 
-  if (lastEntryKey && lastEntryKey.indexOf('!') != -1) {
-    var lastEntryDate = +lastEntryKey.substr(0, lastEntryKey.indexOf('!'));
+  if (lastEntryKey && lastEntryKey.indexOf('meat\xff') != -1 &&
+      lastEntryKey.indexOf('\xff', 6) != -1) {
+    var lastEntryDate = +lastEntryKey.substring(5, lastEntryKey.indexOf('\xff', 6));
     if (!isNaN(lastEntryDate) && lastEntryDate >= startDate) {
-      startDate = lastEntryDate + 1;
+      startDate = lastEntryDate;
+      startKey = lastEntryKey;
+      startKey += '\xff'
     }
   }
 
@@ -148,8 +136,8 @@ module.exports.getSummary = function(date, range, pageSize, lastEntryKey) {
   }
 
   return db.createReadStream({
-    start: startDate + '!',
-    end: endDate + '!',
+    start: startKey,
+    end: endKey,
     limit: pageSize
   });
 }
