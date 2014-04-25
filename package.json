@@ -33,7 +33,7 @@
     "concat-stream": "~1.4.3",
     "nconf": "~0.6.9",
     "level-ttl": "~0.5.0",
-    "sublevel": "~2.4.0"
+    "level-sublevel": "~5.2.0"
   },
   "devDependencies": {
     "mocha": "~1.17.1",
