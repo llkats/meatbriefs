@@ -1,10 +1,14 @@
 var level = require('level');
 var uuid = require('uuid');
+var ttl = require('level-ttl');
+
+var TTL_TIME = 3 * 24 * 60 * 60 * 1000; // 3 days, just to be safe :)
 
 var db = level('./data/', {
   createIfMissing: true,
   valueEncoding: 'json'
 });
+db = ttl(db, { checkFrequency: 60 * 60 * 1000 /* 1 hour */ });
 
 function getDateString(date) {
   return date.getFullYear() + '-' +
@@ -20,7 +24,8 @@ function getExistenceKey(fingerprint, date) {
 // the new count
 module.exports.addMeat = function(meat, cb) {
   var created = new Date(meat.created);
-  var dbKey = meat.created + '!' + uuid.v1();
+  var id = uuid.v1();
+  var dbKey = 'meat\xff' + meat.created + '\xff' + id;
   var existenceKey = getExistenceKey(meat.fingerprint, created);
 
   // store two entries in the DB: one mapping timestamp => message, and another
@@ -58,7 +63,7 @@ module.exports.addMeat = function(meat, cb) {
       });
     }
 
-    db.batch(operations, cb);
+    db.batch(operations, { ttl: TTL_TIME }, cb);
   });
 }
 
@@ -73,7 +78,7 @@ module.exports.incrementCount = function(fingerprint, date, cb) {
     }
 
     value.count++;
-    db.put(key, value, function(err) {
+    db.put(key, value, { ttl: TTL_TIME }, function(err) {
       cb(err);
     });
   });
@@ -112,11 +117,16 @@ module.exports.getSummary = function(date, range, pageSize, lastEntryKey) {
   var startDate =
     new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
   var endDate = startDate + dayMs * range;
+  var startKey = 'meat\xff' + startDate + '\xff';
+  var endKey = 'meat\xff' + endDate + '\xff';
 
-  if (lastEntryKey && lastEntryKey.indexOf('!') != -1) {
-    var lastEntryDate = +lastEntryKey.substr(0, lastEntryKey.indexOf('!'));
+  if (lastEntryKey && lastEntryKey.indexOf('meat\xff') != -1 &&
+      lastEntryKey.indexOf('\xff', 6) != -1) {
+    var lastEntryDate = +lastEntryKey.substring(5, lastEntryKey.indexOf('\xff', 6));
     if (!isNaN(lastEntryDate) && lastEntryDate >= startDate) {
-      startDate = lastEntryDate + 1;
+      startDate = lastEntryDate;
+      startKey = lastEntryKey;
+      startKey += '\xff'
     }
   }
 
@@ -126,8 +136,8 @@ module.exports.getSummary = function(date, range, pageSize, lastEntryKey) {
   }
 
   return db.createReadStream({
-    start: startDate + '!',
-    end: endDate + '!',
+    start: startKey,
+    end: endKey,
     limit: pageSize
   });
 }
