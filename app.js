@@ -26,6 +26,7 @@ var db = require('./db');
 var socketOptions = { 'max reconnection attempts': 1000 };
 var socket = socketClient.connect('https://chat.meatspac.es', socketOptions);
 var concat = require('concat-stream');
+var robots = require('robots.txt');
 
 function getYesterday() {
   var yesterday = new Date();
@@ -46,6 +47,9 @@ socket.on('message', function(data) {
     }
   });
 });
+
+// robots.txt
+app.use(robots(__dirname + '/public/robots.txt'));
 
 app.get('/moar/:lastEntryKey', function(req, res) {
   // get the next 20 messages using the key of the last message present on the page
