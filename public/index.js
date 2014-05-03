@@ -75,9 +75,12 @@ var Briefly = function() {
 
           var oldlist = document.getElementsByTagName('ul')[0];
 
-          // append the new meats into the list on the page
-          for (var i = 0; i < newmeats.length; i++) {
-            oldlist.appendChild(newmeats[i]);
+          // append the new meats into the list on the page. Since getElementsByTagName is a
+          // "living list" and will stay up to date with what is actually inside newlist, and
+          // appendChild will remove any element we append from newlist, we can simply do this with
+          // a while loop and always access the first child
+          while (newmeats.length > 0) {
+            oldlist.appendChild(newmeats[0]);
           }
 
           // add the event listener back to listen for events again
