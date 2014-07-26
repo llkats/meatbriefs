@@ -20,17 +20,17 @@ h1 {
 
 img {
   float: left;
-  margin: 10px;
-  max-height: 100px;
-  width: 133px;
+  margin: 0 10px;
+  max-height: 101px;
+  width: 135px;
 }
 
 li {
   border-top: 1px solid pink;
   clear: both;
   font-size: 1.25rem;
-  margin: 5px 0;
-  min-height: 100px;
+  margin: 0;
+  min-height: 101px;
   position: relative;
 }
 
@@ -38,4 +38,9 @@ ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
+}
+
+p {
+  margin: 0;
+  padding: 14px 0px 18px 0px;
 }
