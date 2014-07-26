@@ -1,4 +1,5 @@
 var express = require('express');
+var objectify = require('through2-objectify');
 var app = express();
 
 var nconf = require('nconf');
@@ -54,22 +55,21 @@ app.use(robots(__dirname + '/public/robots.txt'));
 app.get('/moar/:lastEntryKey', function(req, res) {
   // get the next 20 messages using the key of the last message present on the page
   var summary = db.getSummary(getYesterday(), 1, 20, req.params.lastEntryKey);
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
 
-  // render the partial and send the HTML string to the client
-  var write = concat(function(summary) {
-    res.render('meat', { data:summary }, function(err, html) {
-      res.send(html);
-    });
+  var jsonify = objectify.deobj(function(chunk, enc, cb) {
+    this.push(JSON.stringify(chunk) + '\n');
+    cb();
   });
 
-  summary.pipe(write);
+  summary.pipe(jsonify).pipe(res);
 });
 
 app.get('/', function(req, res){
   var summary = db.getSummary(getYesterday(), 1, 20);
 
   var write = concat(function(streamdata) {
-    res.render('index', { data:streamdata });
+    res.render('index', { data: streamdata });
   });
 
   summary.pipe(write);

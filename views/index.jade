@@ -8,8 +8,9 @@ html
 
     main
       ul.briefs
-        include meat
 
     script(type="text/javascript", src="public/index.js")
+    script(type="text/javascript").
+      window._meatbriefInit=!{JSON.stringify(data)};
     script(type="text/javascript").
       Briefly.init();
