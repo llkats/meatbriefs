@@ -19,7 +19,7 @@ if (env != 'production') {
 app.disable('x-powered-by'); // Don't say we're using Express
 
 app.listen(nconf.get('http:port'));
-console.log('Listening on port ', nconf.get('http:port'));
+console.log('Listening on port', nconf.get('http:port'));
 
 var socketClient = require('socket.io-client');
 var briefify = require('./briefify');
@@ -35,13 +35,8 @@ function getYesterday() {
   return yesterday;
 }
 
-socket.on('message', function(data) {
-  var meat = data.chat.value;
-  if (meat.banned) {
-    return;
-  }
-
-  briefify(meat, db, function(err) {
+socket.on('message', function(chat) {
+  briefify(chat, db, function(err) {
     if (err) {
       console.log('error processing meat: ' + err);
       return;

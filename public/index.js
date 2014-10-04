@@ -29,14 +29,16 @@ var Briefly = function() {
     var li = document.createElement('li');
     li.setAttribute('data-key', meat.key);
 
-    var img = document.createElement('img');
-    img.src = meat.value.media;
+    var video = document.createElement('video');
+    video.autoplay = true;
+    video.loop = true;
+    video.src = meat.value.media;
     var p = document.createElement('p');
     p.textContent = meat.value.message;
     var date = document.createElement('date');
     date.textContent = new Date(meat.value.created).toLocaleString();
 
-    li.appendChild(img);
+    li.appendChild(video);
     li.appendChild(p);
     li.appendChild(date);
     return li;
