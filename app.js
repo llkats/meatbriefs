@@ -35,7 +35,20 @@ function getYesterday() {
   return yesterday;
 }
 
-socket.on('message', function(chat) {
+// WARNING: dumb hacks ahead. Since the DB has no locks or transactions per
+// fingerprint, the initial flood of messages tends to cause duplicate messages
+// to be inserted for people (especially with webm, since it transfers way
+// faster). This dumb hack "fixes" this by ignoring the initial stream of
+// messages. TODO(tec27): add locking/queuing of actions by fingerprints
+var initMessages = false
+socket.on('connect', function() {
+  initMessages = true
+  setTimeout(function() {
+    initMessages = false
+  }, 20000)
+}).on('message', function(chat) {
+  if (initMessages) return
+
   briefify(chat, db, function(err) {
     if (err) {
       console.log('error processing meat: ' + err);

@@ -34,7 +34,7 @@ var Briefly = function() {
     video.loop = true;
     video.src = meat.value.media;
     var p = document.createElement('p');
-    p.textContent = meat.value.message;
+    p.innerHTML = meat.value.message;
     var date = document.createElement('date');
     date.textContent = new Date(meat.value.created).toLocaleString();
 
