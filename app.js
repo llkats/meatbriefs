@@ -25,7 +25,7 @@ var socketClient = require('socket.io-client');
 var briefify = require('./briefify');
 var db = require('./db');
 var socketOptions = { 'max reconnection attempts': 1000 };
-var socket = socketClient.connect('https://chat.meatspac.es', socketOptions);
+var socket = socketClient('https://chat.meatspac.es', socketOptions);
 var concat = require('concat-stream');
 var robots = require('robots.txt');
 
@@ -40,21 +40,24 @@ function getYesterday() {
 // to be inserted for people (especially with webm, since it transfers way
 // faster). This dumb hack "fixes" this by ignoring the initial stream of
 // messages. TODO(tec27): add locking/queuing of actions by fingerprints
-var initMessages = false
+var connectTime = 0
 socket.on('connect', function() {
-  initMessages = true
-  setTimeout(function() {
-    initMessages = false
-  }, 20000)
+  console.log('socket connected')
+  connectTime = Date.now() + 1000 // add a second to account for clock skew
+  socket.emit('join', 'webm');
 }).on('message', function(chat) {
-  if (initMessages) return
+  if (chat.created < connectTime) return
 
   briefify(chat, db, function(err) {
     if (err) {
-      console.log('error processing meat: ' + err);
+      console.error('error processing meat: ' + err);
       return;
     }
   });
+}).on('connect_error', function(err) {
+  console.error('Error connecting', err);
+}).on('connect_timeout', function() {
+  console.error('Websocket connection timed out.');
 });
 
 // robots.txt
