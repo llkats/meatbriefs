@@ -30,25 +30,56 @@ var socket = socketClient('https://chat.meatspac.es', socketOptions);
 var concat = require('concat-stream');
 var robots = require('robots.txt');
 
+
+// A queue for messages to be processed in, such that only one message is ever being processed at
+// once. In theory we can process messages at the same time so long as they don't concern the same
+// fingerprint, but messages on meatspace are generally infrequent enough that this isn't a
+// necessary optimization at this point.
+function BriefingQueue(db) {
+  this._db = db;
+  this._queue = [];
+  this._running = false;
+}
+
+BriefingQueue.prototype.enqueue = function(chat, cb) {
+  this._queue.push({ chat: chat, cb: cb });
+  this._run();
+}
+
+BriefingQueue.prototype._run = function() {
+  if (this._running) return;
+
+  var self = this;
+  function innerRun() {
+    if (!self._queue.length) {
+      self._running = false;
+      return;
+    }
+
+    var task = self._queue.shift();
+    briefify(task.chat, self._db, function(err) {
+      task.cb(err);
+      innerRun();
+    });
+  }
+
+  this._running = true;
+  innerRun();
+}
+
+
 function getYesterday() {
   var yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   return yesterday;
 }
 
-// WARNING: dumb hacks ahead. Since the DB has no locks or transactions per
-// fingerprint, the initial flood of messages tends to cause duplicate messages
-// to be inserted for people. This dumb hack "fixes" this by ignoring the initial
-// stream of messages. TODO(tec27): add locking/queuing of actions by fingerprints
-var connectTime = 0
+var briefer = new BriefingQueue(db)
 socket.on('connect', function() {
   console.log('socket connected')
-  connectTime = Date.now() + 1000 // add a second to account for clock skew
   socket.emit('join', 'webm');
 }).on('message', function(chat) {
-  if (chat.created < connectTime) return
-
-  briefify(chat, db, function(err) {
+  briefer.enqueue(chat, function(err) {
     if (err) {
       console.error('error processing meat: ' + err);
       return;
