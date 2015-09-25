@@ -1,4 +1,6 @@
 var express = require('express');
+var errorHandler = require('errorhandler');
+var serveStatic = require('serve-static');
 var objectify = require('through2-objectify');
 var app = express();
 
@@ -11,10 +13,9 @@ var env = process.env.NODE_ENV || 'development';
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
-app.use(app.router);
-app.use('/public', express.static(pub));
+app.use('/public', serveStatic(pub));
 if (env != 'production') {
-  app.use(express.errorHandler());
+  app.use(errorHandler());
 }
 app.disable('x-powered-by'); // Don't say we're using Express
 
@@ -37,9 +38,8 @@ function getYesterday() {
 
 // WARNING: dumb hacks ahead. Since the DB has no locks or transactions per
 // fingerprint, the initial flood of messages tends to cause duplicate messages
-// to be inserted for people (especially with webm, since it transfers way
-// faster). This dumb hack "fixes" this by ignoring the initial stream of
-// messages. TODO(tec27): add locking/queuing of actions by fingerprints
+// to be inserted for people. This dumb hack "fixes" this by ignoring the initial
+// stream of messages. TODO(tec27): add locking/queuing of actions by fingerprints
 var connectTime = 0
 socket.on('connect', function() {
   console.log('socket connected')
