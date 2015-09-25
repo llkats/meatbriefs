@@ -19,7 +19,7 @@
   ],
   "author": "Lydia Katsamberis",
   "contributors": "Travis Collins",
-  "license": "BSD",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/llkats/meatbriefs/issues"
   },
@@ -28,17 +28,18 @@
     "concat-stream": "^1.4.6",
     "express": "^3.17.6",
     "jade": "^1.5.0",
-    "level": "^0.18.0",
     "level-sublevel": "^6.3.13",
-    "level-ttl": "^2.1.0",
-    "nconf": "^0.6.9",
+    "level-ttl": "^3.1.0",
+    "leveldown": "^1.4.1",
+    "levelup": "^1.2.1",
+    "nconf": "^0.8.0",
     "robots.txt": "^1.0.0",
     "socket.io-client": "^1.1.0",
     "through2-objectify": "^0.1.1",
     "uuid": "^2.0.1"
   },
   "devDependencies": {
-    "mocha": "^1.21.0",
-    "chai": "^1.9.0"
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3"
   }
 }

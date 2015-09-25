@@ -1,4 +1,4 @@
-var level = require('level');
+var level = require('levelup');
 var uuid = require('uuid');
 var ttl = require('level-ttl');
 
