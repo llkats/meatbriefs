@@ -4,7 +4,7 @@ var ttl = require('level-ttl');
 
 var TTL_TIME = 3 * 24 * 60 * 60 * 1000; // 3 days, just to be safe :)
 
-var db = level('./data/', {
+var db = level(__dirname + '/data/', {
   createIfMissing: true,
   valueEncoding: 'json'
 });
