@@ -7,8 +7,9 @@ body {
   color: rgba(0, 0, 0, 0.87);
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   margin: 0 auto;
-  max-width: 896px;
+  max-width: 960px;
   min-width: 512px;
+  width: 96%;
 }
 
 date {
