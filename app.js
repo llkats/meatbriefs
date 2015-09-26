@@ -77,8 +77,8 @@ function getYesterday() {
 var briefer = new BriefingQueue(db)
 socket.on('connect', function() {
   console.log('socket connected')
-  socket.emit('join', 'webm');
-}).on('message', function(chat) {
+  socket.emit('join', 'jpg');
+}).on('chat', function(chat) {
   briefer.enqueue(chat, function(err) {
     if (err) {
       console.error('error processing meat: ' + err);

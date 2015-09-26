@@ -25,20 +25,40 @@ var Briefly = function() {
     }
   };
 
+  function createVideoDisplay(data) {
+    var video = document.createElement('video');
+    video.autoplay = true;
+    video.loop = true;
+    video.src = data;
+    return video;
+  }
+
+  function createImageDisplay(data) {
+    var container = document.createElement('div');
+    container.classList.add('filmstrip');
+    container.style['background-image'] = 'url(\'' + data + '\')';
+    return container;
+  }
+
   function createMeatEntry(meat) {
     var li = document.createElement('li');
     li.setAttribute('data-key', meat.key);
 
-    var video = document.createElement('video');
-    video.autoplay = true;
-    video.loop = true;
-    video.src = meat.value.media;
+    var display;
     var p = document.createElement('p');
-    p.innerHTML = meat.value.message;
     var date = document.createElement('date');
-    date.textContent = new Date(meat.value.created).toLocaleString();
+    if (meat.value.video) {
+      // filmstrip-style message
+      display = createImageDisplay(meat.value.video);
+      p.innerHTML = meat.value.text;
+      date.textContent = new Date(meat.value.sent).toLocaleString();
+    } else {
+      display = createVideoDisplay(meat.value.media);
+      p.innerHTML = meat.value.message;
+      date.textContent = new Date(meat.value.created).toLocaleString();
+    }
 
-    li.appendChild(video);
+    li.appendChild(display);
     li.appendChild(p);
     li.appendChild(date);
     return li;

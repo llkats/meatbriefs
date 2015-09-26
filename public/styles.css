@@ -3,30 +3,54 @@ html {
 }
 
 body {
-  background: white;
-  color: #333;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: #fafafa;
+  color: rgba(0, 0, 0, 0.87);
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 0 auto;
+  max-width: 896px;
+  min-width: 512px;
 }
 
 date {
-  bottom: 0;
+  bottom: 8px;
   font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.54);
   position: absolute;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  margin: 8px 0;
+}
+
 h1 {
-  margin: 30px 10px;
+  font-size: 45px;
+  line-height: 64px;
+  color: rgba(0, 0, 0, 0.54);
 }
 
 video {
   float: left;
-  margin: 0 10px;
+  margin: -1px 16px 0 0;
   max-height: 150px;
   width: 200px;
 }
 
+.filmstrip {
+  float: left;
+  margin: -1px 16px 0 0;
+  height: 150px;
+  width: 200px;
+  background-size: 100% 1000%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-animation: filmstrip 0.92s infinite;
+  animation: filmstrip 0.92s infinite;
+}
+
 li {
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
   clear: both;
   font-size: 1.25rem;
   margin: 0;
@@ -42,5 +66,118 @@ ul {
 
 p {
   margin: 0;
-  padding: 14px 0px 18px 0px;
+  padding: 8px 16px 8px 0px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+a, a:visited, a:hover, a:focus, a:active {
+  font-weight: inherit;
+  color: #F06292;
+}
+
+@-webkit-keyframes filmstrip {
+  0% {
+    background-position: 0 -0%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  10% {
+    background-position: 0 -100%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  20% {
+    background-position: 0 -200%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  30% {
+    background-position: 0 -300%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  40% {
+    background-position: 0 -400%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  50% {
+    background-position: 0 -500%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  60% {
+    background-position: 0 -600%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  70% {
+    background-position: 0 -700%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  80% {
+    background-position: 0 -800%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  90% {
+    background-position: 0 -900%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+}
+
+@keyframes filmstrip {
+  0% {
+    background-position: 0 -0%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  10% {
+    background-position: 0 -100%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  20% {
+    background-position: 0 -200%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  30% {
+    background-position: 0 -300%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  40% {
+    background-position: 0 -400%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  50% {
+    background-position: 0 -500%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  60% {
+    background-position: 0 -600%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  70% {
+    background-position: 0 -700%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  80% {
+    background-position: 0 -800%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
+  90% {
+    background-position: 0 -900%;
+    -webkit-animation-timing-function: steps(1);
+    animation-timing-function: steps(1);
+  }
 }

@@ -23,10 +23,12 @@ function getExistenceKey(fingerprint, date) {
 // Add a message to the db, and update the fingerprint's existence entry with
 // the new count
 module.exports.addMeat = function(meat, cb) {
-  var created = new Date(meat.created);
+  var created = new Date(meat.sent);
   var id = uuid.v1();
-  var dbKey = 'meat\xff' + meat.created + '\xff' + id;
-  var existenceKey = getExistenceKey(meat.fingerprint, created);
+  var dbKey = 'meat\xff' + meat.sent + '\xff' + id;
+  var existenceKey = getExistenceKey(meat.userId, created);
+
+  meat.video = 'data:' + meat.videoMime + ';base64,' + meat.video.toString('base64')
 
   // store two entries in the DB: one mapping timestamp => message, and another
   // mapping day+fingerprint => the first DB entry. This allows us to quickly

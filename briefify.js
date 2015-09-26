@@ -1,8 +1,8 @@
 // Takes a meat message and decides whether it should be inserted in the DB
 // (and if so, does so).
 module.exports = function briefify(meat, db, cb) {
-  var meatDate = new Date(meat.created);
-  db.getCount(meat.fingerprint, meatDate, function(err, count) {
+  var meatDate = new Date(meat.sent);
+  db.getCount(meat.userId, meatDate, function(err, count) {
     if (err) {
       return cb(err);
     }
@@ -16,7 +16,7 @@ module.exports = function briefify(meat, db, cb) {
     } else {
       // Poor, unlucky message :( Tally its existence so the probability
       // calculations for later messages will be correct.
-      return db.incrementCount(meat.fingerprint, meatDate, cb);
+      return db.incrementCount(meat.userId, meatDate, cb);
     }
   });
 };
